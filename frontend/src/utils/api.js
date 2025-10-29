@@ -10,6 +10,10 @@ export const login = (formData) => API.post("/auth/login", formData);
 const authHeader = (token) => ({
   headers: { Authorization: `Bearer ${token}` },
 });
+const localAuthHeader = () => {
+  const token = localStorage.getItem("token");
+  return authHeader(token || "");
+};
 
 // Admin
 export const createFaculty = (data, token) =>
@@ -17,3 +21,12 @@ export const createFaculty = (data, token) =>
 
 export const listFaculty = (token) =>
   API.get("/admin/faculty", authHeader(token));
+
+// Faculty - Exams
+export const listMyExams = () => API.get("/exams", localAuthHeader());
+export const createExam = (payload) =>
+  API.post("/exams", payload, localAuthHeader());
+export const getExam = (id) => API.get(`/exams/${id}`, localAuthHeader());
+export const updateExam = (id, payload) =>
+  API.put(`/exams/${id}`, payload, localAuthHeader());
+export const deleteExam = (id) => API.delete(`/exams/${id}`, localAuthHeader());

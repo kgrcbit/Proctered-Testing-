@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
+const examRoutes = require("./routes/exams");
 
 dotenv.config(); // Load environment variables
 
@@ -17,6 +18,7 @@ app.use(express.json()); // Parse JSON body
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/exams", examRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

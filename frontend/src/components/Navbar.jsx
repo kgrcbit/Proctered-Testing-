@@ -51,6 +51,14 @@ const Navbar = () => {
               >
                 Dashboard
               </Link>
+              {user.role === "faculty" && (
+                <Link
+                  to="/faculty/exams"
+                  className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+                >
+                  Exams
+                </Link>
+              )}
               {user.role === "admin" && (
                 <Link
                   to="/admin/faculty"

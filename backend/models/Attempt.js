@@ -1,0 +1,60 @@
+const mongoose = require("mongoose");
+
+const AnswerSchema = new mongoose.Schema(
+  {
+    questionIndex: { type: Number, required: true },
+    value: { type: mongoose.Schema.Types.Mixed }, // number | number[] | string
+  },
+  { _id: false }
+);
+
+const ViolationSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: [
+        "tab-blur",
+        "visibility-hidden",
+        "fullscreen-exit",
+        "return-timeout",
+      ],
+    },
+    at: { type: Date, default: Date.now },
+    meta: { type: mongoose.Schema.Types.Mixed },
+  },
+  { _id: false }
+);
+
+const AttemptSchema = new mongoose.Schema(
+  {
+    examId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Exam",
+      required: true,
+      index: true,
+    },
+    studentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    startedAt: { type: Date, default: Date.now },
+    submittedAt: { type: Date },
+    status: {
+      type: String,
+      enum: ["in-progress", "submitted", "invalid"],
+      default: "in-progress",
+      index: true,
+    },
+    answers: { type: [AnswerSchema], default: [] },
+    score: { type: Number, default: 0 },
+    manualNeeded: { type: Boolean, default: false },
+    violations: { type: [ViolationSchema], default: [] },
+  },
+  { timestamps: true }
+);
+
+AttemptSchema.index({ examId: 1, studentId: 1 }, { unique: false });
+
+module.exports = mongoose.model("Attempt", AttemptSchema);
