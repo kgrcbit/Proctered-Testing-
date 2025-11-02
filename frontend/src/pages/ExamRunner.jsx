@@ -182,37 +182,25 @@ const ExamRunner = () => {
         overlay: { reason: type, until },
       }));
 
-      let cleared = false;
-      const clearOverlay = () => {
-        if (cleared) return;
-        cleared = true;
-        setState((s) => ({ ...s, overlay: null }));
-      };
-
       const check = setInterval(() => {
         const returned =
           document.fullscreenElement && document.visibilityState === "visible";
         const now = Date.now();
         if (returned) {
           clearInterval(check);
-          // Linger the warning for 1 more second after return so it is visible
-          setTimeout(clearOverlay, 1000);
+          setTimeout(() => {
+            setState((s2) => ({ ...s2, overlay: null }));
+          }, 1000);
           return;
         }
         if (now >= until) {
           clearInterval(check);
-          // On timeout, just clear the overlay
-          clearOverlay();
+          setState((s2) => ({ ...s2, overlay: null }));
+          handleSubmit(true);
         }
       }, 250);
-
-      // Remove auto-submit when violation limit is reached
-      // if (state.violations + 1 >= VIOLATION_LIMIT) {
-      //   clearInterval(check);
-      //   await handleSubmit(true);
-      // }
     },
-    [state.attemptId, state.submitted]
+    [state.attemptId, state.submitted, handleSubmit]
   );
 
   const performStart = async () => {
@@ -454,7 +442,7 @@ const ExamRunner = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-4">
-      {state.overlay && (
+      {state.overlay && !state.submitted && (
         <div className="fixed inset-0 bg-black/70 text-white flex flex-col items-center justify-center z-50">
           <h2 className="text-2xl font-bold mb-2">Stay on the exam</h2>
           {(() => {
