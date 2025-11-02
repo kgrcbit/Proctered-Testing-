@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   useEffect(() => {
     AOS.init({ duration: 1000, once: true, mirror: false });
   }, []);
 
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -56,8 +51,6 @@ const Register = () => {
           Join ProcTesting to deliver or take secure online exams.
         </p>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <input
             type="text"
@@ -88,14 +81,9 @@ const Register = () => {
           />
           <button
             type="submit"
-            className="w-full bg-emerald-600 text-slate-900 py-3 rounded-md font-semibold hover:bg-emerald-500 transition-colors flex items-center justify-center"
-            disabled={loading}
+            className="w-full bg-emerald-600 text-slate-900 py-3 rounded-md font-semibold hover:bg-emerald-500 transition-colors"
           >
-            {loading ? (
-              <span className="animate-spin h-5 w-5 border-t-2 border-emerald-900 rounded-full"></span>
-            ) : (
-              "Sign Up"
-            )}
+            Sign Up
           </button>
         </form>
 

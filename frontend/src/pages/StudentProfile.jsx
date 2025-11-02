@@ -103,7 +103,10 @@ const StudentProfile = () => {
     <div className="max-w-2xl mx-auto p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold">Student Profile</h1>
-        <button onClick={() => navigate(-1)} className="text-indigo-600">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-emerald-700 hover:underline"
+        >
           Back
         </button>
       </div>
@@ -192,7 +195,7 @@ const StudentProfile = () => {
             <div className="pt-2">
               <button
                 disabled={saving}
-                className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-60"
+                className="bg-emerald-600 text-slate-900 font-semibold px-4 py-2 rounded disabled:opacity-60 hover:bg-emerald-500 transition-colors"
               >
                 {saving ? "Saving..." : "Save Profile"}
               </button>

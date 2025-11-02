@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProctorEvents, listAttemptsForExam } from "../utils/api";
 
@@ -11,21 +11,7 @@ const FacultySubmissions = () => {
   const [events, setEvents] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (!stored) {
-      navigate("/login");
-      return;
-    }
-    const u = JSON.parse(stored);
-    if (u.role !== "faculty") {
-      navigate("/");
-      return;
-    }
-    fetchAttempts();
-  }, [examId]);
-
-  const fetchAttempts = async () => {
+  const fetchAttempts = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -40,7 +26,21 @@ const FacultySubmissions = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [examId]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    if (!stored) {
+      navigate("/login");
+      return;
+    }
+    const u = JSON.parse(stored);
+    if (u.role !== "faculty") {
+      navigate("/");
+      return;
+    }
+    fetchAttempts();
+  }, [navigate, fetchAttempts]);
 
   const viewEvents = async (attemptId) => {
     setSelected(attemptId);
@@ -48,7 +48,7 @@ const FacultySubmissions = () => {
     try {
       const { data } = await getProctorEvents(attemptId);
       setEvents(data || []);
-    } catch (e) {
+    } catch {
       setEvents([]);
     }
   };
@@ -57,7 +57,10 @@ const FacultySubmissions = () => {
     <div className="max-w-5xl mx-auto p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Submissions</h1>
-        <Link to={`/faculty/exams/${examId}`} className="text-indigo-600">
+        <Link
+          to={`/faculty/exams/${examId}`}
+          className="text-emerald-700 hover:underline"
+        >
           Back to exam
         </Link>
       </div>
@@ -101,7 +104,7 @@ const FacultySubmissions = () => {
                   <td className="p-3">{a.violationsCount}</td>
                   <td className="p-3">
                     <button
-                      className="text-indigo-600"
+                      className="text-emerald-700 hover:underline"
                       onClick={() => viewEvents(a._id)}
                     >
                       View events

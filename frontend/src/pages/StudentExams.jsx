@@ -103,7 +103,7 @@ const StudentExams = () => {
               </div>
               <div className="pt-2">
                 <button
-                  className="bg-indigo-600 text-white px-3 py-1 rounded"
+                  className="bg-emerald-600 text-slate-900 font-semibold px-3 py-1 rounded hover:bg-emerald-500 transition-colors"
                   onClick={() => navigate(`/attempt/${ex._id}`)}
                   disabled={ex.status === "submitted"}
                   title={

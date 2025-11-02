@@ -7,7 +7,6 @@ import {
   submitAttempt,
 } from "../utils/api";
 
-const VIOLATION_LIMIT = 3;
 const RETURN_TIMEOUT_SECONDS = 10;
 const AUTOSAVE_MS = 3000;
 
@@ -172,7 +171,9 @@ const ExamRunner = () => {
 
       try {
         await logProctorEvent(state.attemptId, type, meta);
-      } catch {}
+      } catch {
+        // ignore logging failure
+      }
 
       const until = Date.now() + RETURN_TIMEOUT_SECONDS * 1000;
       setState((s) => ({
@@ -203,7 +204,7 @@ const ExamRunner = () => {
       //   await handleSubmit(true);
       // }
     },
-    [state.attemptId, state.submitted, state.violations, handleSubmit]
+    [state.attemptId, state.submitted]
   );
 
   const performStart = async () => {
@@ -339,7 +340,9 @@ const ExamRunner = () => {
       }));
       try {
         await saveAttempt(state.attemptId, payload);
-      } catch {}
+      } catch {
+        // ignore autosave failure
+      }
     }, AUTOSAVE_MS);
   };
 

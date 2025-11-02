@@ -4,7 +4,7 @@ import { createFaculty, listFaculty } from "../utils/api";
 
 const AdminFaculty = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -19,7 +19,6 @@ const AdminFaculty = () => {
       return;
     }
     const u = JSON.parse(stored);
-    setUser(u);
     if (u.role !== "admin") {
       navigate("/");
       return;

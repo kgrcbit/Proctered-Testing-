@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { createExam, getExam, updateExam } from "../utils/api";
 
@@ -15,7 +15,6 @@ const ExamEditor = () => {
   const { id } = useParams(); // if present => edit mode
   const isEdit = Boolean(id && id !== "new");
 
-  const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -35,7 +34,6 @@ const ExamEditor = () => {
       return;
     }
     const u = JSON.parse(stored);
-    setUser(u);
     if (u.role !== "faculty") {
       navigate("/");
       return;
@@ -215,7 +213,7 @@ const ExamEditor = () => {
         </h1>
         <button
           onClick={() => navigate("/faculty/exams")}
-          className="text-indigo-600"
+          className="text-emerald-700 hover:underline"
         >
           Back to list
         </button>
@@ -465,7 +463,7 @@ const ExamEditor = () => {
                     <button
                       type="button"
                       onClick={() => addOption(idx)}
-                      className="text-indigo-600"
+                      className="text-emerald-700 hover:underline"
                     >
                       + Add option
                     </button>
@@ -479,7 +477,7 @@ const ExamEditor = () => {
         <div className="pt-2">
           <button
             disabled={saving}
-            className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-60"
+            className="bg-emerald-600 text-slate-900 font-semibold px-4 py-2 rounded disabled:opacity-60 hover:bg-emerald-500 transition-colors"
           >
             {saving ? "Saving..." : isEdit ? "Save changes" : "Create exam"}
           </button>

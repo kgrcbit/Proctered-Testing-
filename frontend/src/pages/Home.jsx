@@ -23,12 +23,21 @@ const Home = () => {
           exams with AI assistance, identity checks, and robust integrity
           signals.
         </p>
-        <Link
-          to="/register"
-          className="mt-6 px-6 sm:px-8 py-3 bg-emerald-500 text-slate-900 font-semibold rounded-full shadow-lg hover:bg-emerald-400 transition-colors text-base sm:text-lg"
-        >
-          Get Started
-        </Link>
+        {localStorage.getItem("token") ? (
+          <Link
+            to="/dashboard"
+            className="mt-6 px-6 sm:px-8 py-3 bg-emerald-500 text-slate-900 font-semibold rounded-full shadow-lg hover:bg-emerald-400 transition-colors text-base sm:text-lg"
+          >
+            Go to Dashboard
+          </Link>
+        ) : (
+          <Link
+            to="/register"
+            className="mt-6 px-6 sm:px-8 py-3 bg-emerald-500 text-slate-900 font-semibold rounded-full shadow-lg hover:bg-emerald-400 transition-colors text-base sm:text-lg"
+          >
+            Get Started
+          </Link>
+        )}
       </section>
 
       {/* How It Works */}

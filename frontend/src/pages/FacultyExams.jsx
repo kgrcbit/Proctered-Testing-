@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteExam, listMyExams } from "../utils/api";
 
 const FacultyExams = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -16,7 +16,6 @@ const FacultyExams = () => {
       return;
     }
     const u = JSON.parse(stored);
-    setUser(u);
     if (u.role !== "faculty") {
       navigate("/");
       return;
