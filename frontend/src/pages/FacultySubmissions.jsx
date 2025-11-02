@@ -147,13 +147,32 @@ const FacultySubmissions = () => {
             <div className="text-gray-500">No events.</div>
           ) : (
             <ul className="list-disc pl-5 space-y-1">
-              {events.map((e) => (
-                <li key={e._id} className="text-sm">
-                  <span className="font-medium">{e.type}</span> @{" "}
-                  {new Date(e.createdAt).toLocaleString()}{" "}
-                  {e.meta ? `- ${JSON.stringify(e.meta)}` : ""}
-                </li>
-              ))}
+              {events.map((e) => {
+                const friendly = {
+                  "visibility-hidden": {
+                    label: "Switched away from the test",
+                    help: "Tab or app not visible",
+                  },
+                  "tab-blur": {
+                    label: "Left the test window",
+                    help: "Window lost focus or alt-tab",
+                  },
+                  "fullscreen-exit": {
+                    label: "Exited fullscreen",
+                    help: "Fullscreen turned off",
+                  },
+                  "return-timeout": {
+                    label: "Return timeout",
+                    help: "Took too long to come back",
+                  },
+                }[e.type] || { label: e.type, help: "" };
+                return (
+                  <li key={e._id} className="text-sm">
+                    <span className="font-medium">{friendly.label}</span>
+                    {friendly.help ? ` – ${friendly.help}` : ""} @ {new Date(e.createdAt).toLocaleString()}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

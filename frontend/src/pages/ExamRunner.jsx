@@ -457,10 +457,41 @@ const ExamRunner = () => {
       {state.overlay && (
         <div className="fixed inset-0 bg-black/70 text-white flex flex-col items-center justify-center z-50">
           <h2 className="text-2xl font-bold mb-2">Stay on the exam</h2>
-          <p className="mb-4">
-            Violation detected: {state.overlay.reason}. Please return to the
-            exam to continue.
-          </p>
+          {(() => {
+            const map = {
+              "visibility-hidden": {
+                title: "You switched away from the test",
+                detail:
+                  "Please keep this tab visible. Switching to other apps or tabs isn't allowed during the exam.",
+              },
+              "tab-blur": {
+                title: "You left the test window",
+                detail:
+                  "Please keep the exam window active. Clicking outside or alt-tabbing counts as a violation.",
+              },
+              "fullscreen-exit": {
+                title: "You exited fullscreen",
+                detail:
+                  "The exam must remain in fullscreen. Please return to fullscreen to continue.",
+              },
+              "return-timeout": {
+                title: "You took too long to return",
+                detail:
+                  "Please stay within the exam window and avoid leaving for extended periods.",
+              },
+            };
+            const v = map[state.overlay.reason] || {
+              title: "Activity outside the exam detected",
+              detail:
+                "Please keep the exam window focused and in fullscreen for the duration of the test.",
+            };
+            return (
+              <>
+                <div className="text-lg font-semibold mb-1">{v.title}</div>
+                <p className="mb-4 text-sm text-gray-200">{v.detail}</p>
+              </>
+            );
+          })()}
           {typeof state.overlay.until === "number" && (
             <div className="mb-4 text-sm text-gray-200">
               Warning will clear in{" "}
