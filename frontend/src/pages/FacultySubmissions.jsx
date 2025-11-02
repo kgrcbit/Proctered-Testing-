@@ -169,7 +169,8 @@ const FacultySubmissions = () => {
                 return (
                   <li key={e._id} className="text-sm">
                     <span className="font-medium">{friendly.label}</span>
-                    {friendly.help ? ` – ${friendly.help}` : ""} @ {new Date(e.createdAt).toLocaleString()}
+                    {friendly.help ? ` – ${friendly.help}` : ""} @{" "}
+                    {new Date(e.createdAt).toLocaleString()}
                   </li>
                 );
               })}
