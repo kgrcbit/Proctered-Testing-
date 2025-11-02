@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const Register = () => {
   useEffect(() => {
@@ -45,27 +44,16 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-gray-50 font-sans custom-scrollbar flex items-center justify-center min-h-screen p-6">
-      <style>
-        {`
-          ::-webkit-scrollbar {
-            width: 8px;
-          }
-          ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #4f46e5, #3b82f6);
-            border-radius: 10px;
-          }
-        `}
-      </style>
+    <div className="bg-slate-50 font-sans flex items-center justify-center min-h-screen p-6">
       <div
-        className="bg-white p-10 rounded-2xl shadow-xl max-w-md w-full text-center"
+        className="bg-white p-10 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-200"
         data-aos="fade-up"
       >
-        <h2 className="text-4xl font-bold text-indigo-700 mb-6">
+        <h2 className="text-3xl sm:text-4xl font-bold text-emerald-700 mb-3">
           Create Account
         </h2>
-        <p className="text-gray-600 mb-6">
-          Join us and start your learning journey!
+        <p className="text-slate-600 mb-6">
+          Join ProcTesting to deliver or take secure online exams.
         </p>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -77,7 +65,7 @@ const Register = () => {
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
             required
           />
           <input
@@ -86,7 +74,7 @@ const Register = () => {
             placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
             required
           />
           <input
@@ -95,25 +83,25 @@ const Register = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
             required
           />
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition-all flex items-center justify-center"
+            className="w-full bg-emerald-600 text-slate-900 py-3 rounded-md font-semibold hover:bg-emerald-500 transition-colors flex items-center justify-center"
             disabled={loading}
           >
             {loading ? (
-              <span className="animate-spin h-5 w-5 border-t-2 border-white rounded-full"></span>
+              <span className="animate-spin h-5 w-5 border-t-2 border-emerald-900 rounded-full"></span>
             ) : (
               "Sign Up"
             )}
           </button>
         </form>
 
-        <p className="mt-4 text-gray-600">
+        <p className="mt-4 text-slate-600">
           Already have an account?{" "}
-          <a href="/login" className="text-indigo-600 hover:underline">
+          <a href="/login" className="text-emerald-700 hover:underline">
             Login
           </a>
         </p>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
@@ -20,25 +20,25 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-indigo-600 text-white shadow-lg p-4">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-slate-900 text-slate-100 border-b border-slate-800">
+      <div className="container mx-auto flex justify-between items-center px-4 py-3">
         <Link
           to="/"
-          className="text-3xl font-bold tracking-wide hover:text-indigo-300 transition duration-300"
+          className="text-2xl sm:text-3xl font-bold tracking-wide hover:text-emerald-400 transition-colors"
         >
-          CourseCred
+          ProcTesting
         </Link>
 
-        <div className="space-x-6 flex items-center">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link
             to="/"
-            className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+            className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
           >
             Home
           </Link>
           <Link
             to="/contactus"
-            className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+            className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
           >
             Contact
           </Link>
@@ -47,14 +47,14 @@ const Navbar = () => {
             <>
               <Link
                 to="/dashboard"
-                className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+                className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
               >
                 Dashboard
               </Link>
               {user.role === "faculty" && (
                 <Link
                   to="/faculty/exams"
-                  className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+                  className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
                 >
                   Exams
                 </Link>
@@ -63,13 +63,13 @@ const Navbar = () => {
                 <>
                   <Link
                     to="/exams"
-                    className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+                    className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
                   >
                     Exams
                   </Link>
                   <Link
                     to="/student/profile"
-                    className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+                    className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
                   >
                     Profile
                   </Link>
@@ -78,14 +78,14 @@ const Navbar = () => {
               {user.role === "admin" && (
                 <Link
                   to="/admin/faculty"
-                  className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+                  className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
                 >
                   Faculty
                 </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold transition duration-300"
+                className="ml-1 bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-semibold px-3 py-2 rounded-lg transition-colors"
               >
                 Logout
               </button>
@@ -94,13 +94,13 @@ const Navbar = () => {
             <>
               <Link
                 to="/login"
-                className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+                className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="hover:bg-indigo-500 px-4 py-2 rounded-lg transition duration-300"
+                className="px-3 py-2 rounded-lg bg-emerald-600 text-slate-900 font-semibold hover:bg-emerald-500 transition-colors"
               >
                 Register
               </Link>

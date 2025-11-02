@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser, updateProfile } from "../utils/api";
 
@@ -18,11 +18,17 @@ const StudentProfile = () => {
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
-    if (!stored) { navigate("/login"); return; }
+    if (!stored) {
+      navigate("/login");
+      return;
+    }
     const u = JSON.parse(stored);
-    if (u.role !== "student") { navigate("/"); return; }
+    if (u.role !== "student") {
+      navigate("/");
+      return;
+    }
     load();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const load = async () => {
@@ -38,7 +44,11 @@ const StudentProfile = () => {
         section: data.section ?? "",
       });
     } catch (e) {
-      setError(e?.response?.data?.message || e?.response?.data?.error || "Failed to load profile");
+      setError(
+        e?.response?.data?.message ||
+          e?.response?.data?.error ||
+          "Failed to load profile"
+      );
     } finally {
       setLoading(false);
     }
@@ -62,35 +72,52 @@ const StudentProfile = () => {
       const stored = localStorage.getItem("user");
       if (stored) {
         const u = JSON.parse(stored);
-        const updated = { ...u, ...{
-          name: data.name,
-          college: data.college,
-          department: data.department,
-          year: data.year,
-          section: data.section,
-        }};
+        const updated = {
+          ...u,
+          ...{
+            name: data.name,
+            college: data.college,
+            department: data.department,
+            year: data.year,
+            section: data.section,
+          },
+        };
         localStorage.setItem("user", JSON.stringify(updated));
       }
       setSuccess("Profile updated");
     } catch (e) {
-      setError(e?.response?.data?.message || e?.response?.data?.error || "Failed to update profile");
+      setError(
+        e?.response?.data?.message ||
+          e?.response?.data?.error ||
+          "Failed to update profile"
+      );
     } finally {
       setSaving(false);
     }
   };
 
-  const years = [1,2,3,4,5,6,7,8];
-  const sections = [1,2,3,4,5];
+  const years = [1, 2, 3, 4, 5, 6, 7, 8];
+  const sections = [1, 2, 3, 4, 5];
 
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold">Student Profile</h1>
-        <button onClick={() => navigate(-1)} className="text-indigo-600">Back</button>
+        <button onClick={() => navigate(-1)} className="text-indigo-600">
+          Back
+        </button>
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-3">{error}</div>}
-      {success && <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-3">{success}</div>}
+      {error && (
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-3">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-3">
+          {success}
+        </div>
+      )}
 
       <form onSubmit={onSave} className="bg-white rounded shadow p-4 space-y-4">
         {loading ? (
@@ -115,11 +142,15 @@ const StudentProfile = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Department (Branch)</label>
+              <label className="block text-sm font-medium">
+                Department (Branch)
+              </label>
               <input
                 className="border rounded w-full px-3 py-2"
                 value={form.department}
-                onChange={(e) => setForm({ ...form, department: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, department: e.target.value })
+                }
                 placeholder="e.g. CSE, EEE"
               />
             </div>
@@ -133,7 +164,9 @@ const StudentProfile = () => {
                 >
                   <option value="">Select year</option>
                   {years.map((y) => (
-                    <option key={y} value={y}>{y}</option>
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -142,18 +175,25 @@ const StudentProfile = () => {
                 <select
                   className="border rounded w-full px-3 py-2"
                   value={form.section}
-                  onChange={(e) => setForm({ ...form, section: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, section: e.target.value })
+                  }
                 >
                   <option value="">Select section</option>
                   {sections.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div className="pt-2">
-              <button disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-60">
+              <button
+                disabled={saving}
+                className="bg-indigo-600 text-white px-4 py-2 rounded disabled:opacity-60"
+              >
                 {saving ? "Saving..." : "Save Profile"}
               </button>
             </div>
@@ -162,7 +202,8 @@ const StudentProfile = () => {
       </form>
 
       <div className="text-sm text-gray-600 mt-3">
-        Tip: Fill these fields so exams assigned to your year/branch/section show up under Exams.
+        Tip: Fill these fields so exams assigned to your year/branch/section
+        show up under Exams.
       </div>
     </div>
   );

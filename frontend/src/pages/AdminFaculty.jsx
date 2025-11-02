@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createFaculty, listFaculty } from "../utils/api";
 
@@ -113,7 +113,7 @@ const AdminFaculty = () => {
         />
         <button
           type="submit"
-          className="bg-indigo-600 text-white rounded px-4 py-2 disabled:opacity-60"
+          className="bg-emerald-600 text-slate-900 font-semibold rounded px-4 py-2 disabled:opacity-60 hover:bg-emerald-500 transition-colors"
           disabled={loading}
         >
           {loading ? "Saving..." : "Create"}

@@ -17,6 +17,7 @@ import StudentExams from "./pages/StudentExams";
 import ExamRunner from "./pages/ExamRunner";
 import StudentProfile from "./pages/StudentProfile";
 import Navbar from "./components/Navbar";
+import PropTypes from "prop-types";
 
 const PrivateRoute = ({ children }) =>
   localStorage.getItem("token") ? children : <Navigate to="/login" />;
@@ -26,6 +27,15 @@ const RoleRoute = ({ allow, children }) => {
   if (!stored) return <Navigate to="/login" />;
   const user = JSON.parse(stored);
   return allow.includes(user.role) ? children : <Navigate to="/" />;
+};
+
+PrivateRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+RoleRoute.propTypes = {
+  allow: PropTypes.arrayOf(PropTypes.string).isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 function App() {

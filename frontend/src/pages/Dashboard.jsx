@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -20,16 +20,17 @@ const Dashboard = () => {
   }, [navigate]);
 
   return (
-    <div className="bg-gray-100 font-sans flex items-center justify-center h-screen">
+    <div className="bg-slate-50 font-sans flex items-center justify-center min-h-[70vh] py-10">
       <div
-        className="bg-white p-10 rounded-xl shadow-2xl max-w-md w-full text-center"
+        className="bg-white p-10 rounded-xl shadow-xl max-w-md w-full text-center border border-slate-200"
         data-aos="fade-up"
       >
-        <h2 className="text-4xl font-bold text-indigo-700 mb-4">
+        <h2 className="text-3xl sm:text-4xl font-bold text-emerald-700 mb-4">
           Welcome, {user ? user.name : "Guest"}!
         </h2>
-        <p className="text-gray-600 mb-6">
-          This is your dashboard. Here, you can manage your account and courses.
+        <p className="text-slate-600 mb-6">
+          Manage exams, review attempts, and keep your proctoring settings in
+          check.
         </p>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteExam, listMyExams } from "../utils/api";
 
@@ -61,7 +61,7 @@ const FacultyExams = () => {
         <h1 className="text-3xl font-bold">My Exams</h1>
         <Link
           to="/faculty/exams/new"
-          className="bg-indigo-600 text-white px-4 py-2 rounded"
+          className="bg-emerald-600 text-slate-900 font-semibold px-4 py-2 rounded hover:bg-emerald-500 transition-colors"
         >
           New Exam
         </Link>
@@ -113,13 +113,13 @@ const FacultyExams = () => {
                   <td className="p-3 flex gap-3">
                     <Link
                       to={`/faculty/exams/${ex._id}`}
-                      className="text-indigo-600"
+                      className="text-emerald-700 hover:underline"
                     >
                       Edit
                     </Link>
                     <Link
                       to={`/faculty/exams/${ex._id}/attempts`}
-                      className="text-indigo-600"
+                      className="text-emerald-700 hover:underline"
                     >
                       Submissions
                     </Link>

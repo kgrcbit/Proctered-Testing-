@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProctorEvents, listAttemptsForExam } from "../utils/api";
 
@@ -13,9 +13,15 @@ const FacultySubmissions = () => {
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
-    if (!stored) { navigate("/login"); return; }
+    if (!stored) {
+      navigate("/login");
+      return;
+    }
     const u = JSON.parse(stored);
-    if (u.role !== "faculty") { navigate("/"); return; }
+    if (u.role !== "faculty") {
+      navigate("/");
+      return;
+    }
     fetchAttempts();
   }, [examId]);
 
@@ -26,7 +32,11 @@ const FacultySubmissions = () => {
       const { data } = await listAttemptsForExam(examId);
       setRows(data || []);
     } catch (e) {
-      setError(e?.response?.data?.message || e?.response?.data?.error || "Failed to load attempts");
+      setError(
+        e?.response?.data?.message ||
+          e?.response?.data?.error ||
+          "Failed to load attempts"
+      );
     } finally {
       setLoading(false);
     }
@@ -47,10 +57,14 @@ const FacultySubmissions = () => {
     <div className="max-w-5xl mx-auto p-6 space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Submissions</h1>
-        <Link to={`/faculty/exams/${examId}`} className="text-indigo-600">Back to exam</Link>
+        <Link to={`/faculty/exams/${examId}`} className="text-indigo-600">
+          Back to exam
+        </Link>
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 px-4 py-2 rounded">{error}</div>}
+      {error && (
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded">{error}</div>
+      )}
 
       <div className="bg-white rounded shadow">
         <table className="w-full table-auto">
@@ -66,9 +80,17 @@ const FacultySubmissions = () => {
           </thead>
           <tbody>
             {loading && rows.length === 0 ? (
-              <tr><td colSpan={6} className="p-4 text-center text-gray-500">Loading...</td></tr>
+              <tr>
+                <td colSpan={6} className="p-4 text-center text-gray-500">
+                  Loading...
+                </td>
+              </tr>
             ) : rows.length === 0 ? (
-              <tr><td colSpan={6} className="p-4 text-center text-gray-500">No attempts yet.</td></tr>
+              <tr>
+                <td colSpan={6} className="p-4 text-center text-gray-500">
+                  No attempts yet.
+                </td>
+              </tr>
             ) : (
               rows.map((a) => (
                 <tr key={a._id} className="border-t">
@@ -78,7 +100,12 @@ const FacultySubmissions = () => {
                   <td className="p-3">{a.score}</td>
                   <td className="p-3">{a.violationsCount}</td>
                   <td className="p-3">
-                    <button className="text-indigo-600" onClick={() => viewEvents(a._id)}>View events</button>
+                    <button
+                      className="text-indigo-600"
+                      onClick={() => viewEvents(a._id)}
+                    >
+                      View events
+                    </button>
                   </td>
                 </tr>
               ))
@@ -90,8 +117,18 @@ const FacultySubmissions = () => {
       {selected && (
         <div className="bg-white rounded shadow p-4">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-semibold">Proctoring events for {selected}</h2>
-            <button className="text-sm text-gray-600" onClick={()=>{ setSelected(null); setEvents([]); }}>Close</button>
+            <h2 className="text-xl font-semibold">
+              Proctoring events for {selected}
+            </h2>
+            <button
+              className="text-sm text-gray-600"
+              onClick={() => {
+                setSelected(null);
+                setEvents([]);
+              }}
+            >
+              Close
+            </button>
           </div>
           {events.length === 0 ? (
             <div className="text-gray-500">No events.</div>
@@ -99,7 +136,9 @@ const FacultySubmissions = () => {
             <ul className="list-disc pl-5 space-y-1">
               {events.map((e) => (
                 <li key={e._id} className="text-sm">
-                  <span className="font-medium">{e.type}</span> @ {new Date(e.createdAt).toLocaleString()} {e.meta ? `- ${JSON.stringify(e.meta)}` : ''}
+                  <span className="font-medium">{e.type}</span> @{" "}
+                  {new Date(e.createdAt).toLocaleString()}{" "}
+                  {e.meta ? `- ${JSON.stringify(e.meta)}` : ""}
                 </li>
               ))}
             </ul>
