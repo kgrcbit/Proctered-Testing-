@@ -20,33 +20,48 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
+    setError("");
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    const email = formData.email.trim();
+    const password = formData.password;
+    const emailOk = /.+@.+\..+/.test(email);
+    if (!email || !emailOk || !password) {
+      setError("Please enter a valid email and password.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        // Save token and user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-
         // Refresh page to update navbar dynamically
         window.location.reload();
       } else {
-        alert(data.message);
+        setError(data.message || "Invalid credentials. Please try again.");
       }
-    } catch (error) {
-      console.error("Login Error:", error);
+    } catch (err) {
+      console.error("Login Error:", err);
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,7 +74,19 @@ const Login = () => {
         <h2 className="text-3xl sm:text-4xl font-bold text-emerald-700 mb-6">
           Login
         </h2>
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        {error && (
+          <div
+            className="bg-red-50 border border-red-200 text-red-700 text-left px-3 py-2 rounded mb-4"
+            role="alert"
+            aria-live="polite"
+          >
+            {error}
+          </div>
+        )}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col space-y-4 text-left"
+        >
           <input
             type="email"
             name="email"
@@ -69,20 +96,58 @@ const Login = () => {
             className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
             required
           />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            required
-          />
+          <div>
+            <label className="sr-only" htmlFor="password">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 pr-12"
+                required
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-0 px-3 text-slate-600 hover:text-slate-800"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l18 18a.75.75 0 1 0 1.06-1.06l-3.088-3.088A11.68 11.68 0 0 0 21.75 12C20.872 9.33 17.4 5.25 12 5.25c-1.545 0-2.94.351-4.18.92L3.53 2.47ZM12 7.5c4.212 0 7.2 3.333 8.02 4.5-.258.373-.644.886-1.146 1.46l-2.25-2.25A4.5 4.5 0 0 0 9.79 8.54l-1.71-1.71C9.1 6.97 10.48 6.75 12 6.75Zm0 9.75a4.5 4.5 0 0 0 4.038-2.5l-1.597-1.597A2.999 2.999 0 0 1 12 15a2.999 2.999 0 0 1-2.44-1.303l-1.597-1.597A4.5 4.5 0 0 0 12 17.25Zm-8.02-3.75c.334.482.83 1.146 1.479 1.848l-1.06 1.06C2.658 15.32 2.13 14.608 2.25 12c.878-2.67 4.35-6.75 9.75-6.75.847 0 1.66.094 2.43.269l-1.31 1.31c-.356-.045-.72-.069-1.12-.069-4.212 0-7.2 3.333-8.02 4.5Z" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path d="M12 5.25c-5.4 0-8.872 4.08-9.75 6.75.878 2.67 4.35 6.75 9.75 6.75s8.872-4.08 9.75-6.75c-.878-2.67-4.35-6.75-9.75-6.75Zm0 10.5a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5Z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
           <button
             type="submit"
-            className="w-full bg-emerald-600 text-slate-900 py-3 rounded-md font-semibold hover:bg-emerald-500 transition-colors"
+            className={`w-full bg-emerald-600 text-slate-900 py-3 rounded-md font-semibold transition-colors ${
+              loading ? "opacity-60 cursor-not-allowed" : "hover:bg-emerald-500"
+            }`}
+            disabled={loading}
           >
-            Login
+            {loading ? "Signing in…" : "Login"}
           </button>
         </form>
         <p className="mt-4 text-slate-600">
