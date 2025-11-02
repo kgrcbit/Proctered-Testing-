@@ -298,12 +298,23 @@ router.get(
         .select(
           "studentId status score submittedAt violations createdAt startedAt"
         )
+        .populate("studentId", "name email rollNo")
         .sort({ createdAt: -1 })
         .lean();
 
       const mapped = attempts.map((a) => ({
         _id: a._id,
-        studentId: a.studentId,
+        // Keep studentId for backward compatibility while also returning denormalized student data
+        studentId: a.studentId?._id || a.studentId,
+        student:
+          a.studentId && typeof a.studentId === "object"
+            ? {
+                _id: a.studentId._id,
+                name: a.studentId.name,
+                email: a.studentId.email,
+                rollNo: a.studentId.rollNo,
+              }
+            : null,
         status: a.status,
         score: a.score,
         submittedAt: a.submittedAt,

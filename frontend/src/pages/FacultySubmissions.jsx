@@ -58,7 +58,7 @@ const FacultySubmissions = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Submissions</h1>
         <Link
-          to={`/faculty/exams/${examId}`}
+          to={`/faculty/exams/`}
           className="text-emerald-700 hover:underline"
         >
           Back to exam
@@ -95,23 +95,33 @@ const FacultySubmissions = () => {
                 </td>
               </tr>
             ) : (
-              rows.map((a) => (
-                <tr key={a._id} className="border-t">
-                  <td className="p-3 text-sm">{a._id}</td>
-                  <td className="p-3 text-sm">{a.studentId}</td>
-                  <td className="p-3">{a.status}</td>
-                  <td className="p-3">{a.score}</td>
-                  <td className="p-3">{a.violationsCount}</td>
-                  <td className="p-3">
-                    <button
-                      className="text-emerald-700 hover:underline"
-                      onClick={() => viewEvents(a._id)}
-                    >
-                      View events
-                    </button>
-                  </td>
-                </tr>
-              ))
+              rows.map((a) => {
+                const studentName =
+                  a.student?.name || a.student?.email || a.studentId;
+                const studentMeta = a.student?.rollNo
+                  ? ` (${a.student.rollNo})`
+                  : "";
+                return (
+                  <tr key={a._id} className="border-t">
+                    <td className="p-3 text-sm">{a._id}</td>
+                    <td className="p-3 text-sm">
+                      {studentName}
+                      {studentMeta}
+                    </td>
+                    <td className="p-3">{a.status}</td>
+                    <td className="p-3">{a.score}</td>
+                    <td className="p-3">{a.violationsCount}</td>
+                    <td className="p-3">
+                      <button
+                        className="text-emerald-700 hover:underline"
+                        onClick={() => viewEvents(a._id)}
+                      >
+                        View events
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
