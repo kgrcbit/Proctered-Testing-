@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getProctorEvents, listAttemptsForExam } from "../utils/api";
+import {
+  getProctorEvents,
+  listAttemptsForExam,
+  grantRetake,
+} from "../utils/api";
 
 const FacultySubmissions = () => {
   const navigate = useNavigate();
@@ -167,6 +171,26 @@ const FacultySubmissions = () => {
     }
   };
 
+  const onGrantRetake = async (studentId) => {
+    const input = window.prompt("How many retakes to grant?", "1");
+    if (input == null) return; // cancelled
+    const count = Math.max(1, Number(input) || 1);
+    try {
+      const { data } = await grantRetake(examId, studentId, count);
+      alert(
+        `Retake granted. Remaining for student: ${data?.remaining ?? count}`
+      );
+      // No need to refetch attempts immediately; optional refresh
+      // await fetchAttempts();
+    } catch (e) {
+      alert(
+        e?.response?.data?.message ||
+          e?.response?.data?.error ||
+          "Failed to grant retake"
+      );
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-4">
       <div className="flex items-center justify-between gap-4">
@@ -250,6 +274,15 @@ const FacultySubmissions = () => {
                       >
                         View events
                       </button>
+                      {a.student?._id && (
+                        <button
+                          className="ml-3 text-emerald-700 hover:underline"
+                          onClick={() => onGrantRetake(a.student._id)}
+                          title="Allow this student to retake the test"
+                        >
+                          Grant retake
+                        </button>
+                      )}
                     </td>
                   </tr>
                 );

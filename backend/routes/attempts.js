@@ -64,7 +64,7 @@ router.post("/start", auth, auth.requireRole("student"), async (req, res) => {
         .json({ message: "You are not assigned to this exam" });
     }
 
-    // find existing attempt if any
+    // find latest attempt if any
     let attempt = await Attempt.findOne({
       examId,
       studentId: req.user.id,
@@ -79,15 +79,54 @@ router.post("/start", auth, auth.requireRole("student"), async (req, res) => {
         attempt.status = "invalid";
         attempt.submittedAt = now;
         await attempt.save();
-        return res.status(400).json({
-          message:
-            "Your previous attempt has already ended. Please contact faculty.",
-        });
+        // If faculty granted a retake, allow creating a new attempt below
+        // Otherwise, block restart
+        const grantIdx = (exam.retakeGrants || []).findIndex(
+          (g) =>
+            String(g.studentId) === String(req.user.id) &&
+            (g.remaining || 0) > 0
+        );
+        if (grantIdx === -1) {
+          return res.status(400).json({
+            message:
+              "Your previous attempt has already ended. Please contact faculty.",
+          });
+        }
       }
     }
 
-    // if none or submitted/invalid, create new
-    if (!attempt || attempt.status !== "in-progress") {
+    // Create a new attempt only if:
+    // - no prior attempt exists (first start), OR
+    // - prior latest attempt is submitted/invalid, AND faculty granted a retake token
+    if (!attempt) {
+      attempt = await Attempt.create({
+        examId,
+        studentId: req.user.id,
+        startedAt: now,
+        status: "in-progress",
+      });
+    } else if (attempt.status !== "in-progress") {
+      let useRetake = false;
+      const grants = exam.retakeGrants || [];
+      const idx = grants.findIndex(
+        (g) =>
+          String(g.studentId) === String(req.user.id) && (g.remaining || 0) > 0
+      );
+      if (idx !== -1) {
+        useRetake = true;
+      }
+
+      if (!useRetake) {
+        return res.status(400).json({
+          message: "You have already submitted this exam.",
+        });
+      }
+
+      // consume one retake token and create new attempt
+      grants[idx].remaining = Math.max(0, (grants[idx].remaining || 0) - 1);
+      exam.retakeGrants = grants;
+      await exam.save();
+
       attempt = await Attempt.create({
         examId,
         studentId: req.user.id,
@@ -323,6 +362,51 @@ router.get(
       }));
 
       return res.json(mapped);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+// Faculty: grant retake(s) to a student for an exam
+// POST /api/attempts/exam/:examId/grant-retake { studentId, count? }
+router.post(
+  "/exam/:examId/grant-retake",
+  auth,
+  auth.requireRole("faculty"),
+  async (req, res) => {
+    try {
+      const { examId } = req.params;
+      const { studentId, count } = req.body || {};
+      const inc = Math.max(1, Number(count) || 1);
+
+      const exam = await Exam.findOne({ _id: examId, createdBy: req.user.id });
+      if (!exam) return res.status(404).json({ message: "Exam not found" });
+      if (!studentId)
+        return res.status(400).json({ message: "studentId is required" });
+
+      const grants = exam.retakeGrants || [];
+      const idx = grants.findIndex(
+        (g) => String(g.studentId) === String(studentId)
+      );
+      if (idx === -1) {
+        grants.push({ studentId, remaining: inc, grantedAt: new Date() });
+      } else {
+        grants[idx].remaining = Math.max(0, (grants[idx].remaining || 0) + inc);
+        grants[idx].grantedAt = new Date();
+      }
+      exam.retakeGrants = grants;
+      await exam.save();
+
+      const entry = exam.retakeGrants.find(
+        (g) => String(g.studentId) === String(studentId)
+      );
+      return res.json({
+        examId: exam._id,
+        studentId,
+        remaining: entry?.remaining || 0,
+      });
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: "Internal server error" });

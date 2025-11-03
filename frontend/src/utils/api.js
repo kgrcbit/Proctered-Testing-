@@ -59,3 +59,11 @@ export const listAttemptsForExam = (examId) =>
   API.get(`/attempts/exam/${examId}/attempts`, localAuthHeader());
 export const getProctorEvents = (attemptId) =>
   API.get(`/attempts/${attemptId}/events`, localAuthHeader());
+
+// Faculty - Retakes
+export const grantRetake = (examId, studentId, count = 1) =>
+  API.post(
+    `/attempts/exam/${examId}/grant-retake`,
+    { studentId, count },
+    localAuthHeader()
+  );

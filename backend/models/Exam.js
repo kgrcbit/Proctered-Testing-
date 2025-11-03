@@ -31,6 +31,26 @@ const ExamSchema = new mongoose.Schema(
       department: [{ type: String }],
       section: [{ type: Number, min: 1, max: 5 }],
     },
+    // Faculty-granted per-student retake tokens for this exam
+    // Each entry gives a student N additional starts after a submission/invalid
+    retakeGrants: {
+      type: [
+        new mongoose.Schema(
+          {
+            studentId: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "User",
+              required: true,
+              index: true,
+            },
+            remaining: { type: Number, default: 1, min: 0 },
+            grantedAt: { type: Date, default: Date.now },
+          },
+          { _id: false }
+        ),
+      ],
+      default: [],
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
