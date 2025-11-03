@@ -2,8 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import config from "../config/config";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: true, mirror: false });
   }, []);
@@ -99,7 +102,7 @@ const Register = () => {
       if (response.ok) {
         setSuccess("Registration successful! Redirecting to login...");
         setTimeout(() => {
-          window.location.href = "/login";
+          navigate("/login");
         }, 800);
       } else {
         setError(data.message || "Registration failed. Please try again.");

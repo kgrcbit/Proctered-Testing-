@@ -55,8 +55,9 @@ const Login = () => {
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        // Refresh page to update navbar dynamically
-        window.location.reload();
+        // Notify app components and navigate without full reload
+        window.dispatchEvent(new Event("user-updated"));
+        navigate("/dashboard");
       } else {
         setError(data.message || "Invalid credentials. Please try again.");
       }

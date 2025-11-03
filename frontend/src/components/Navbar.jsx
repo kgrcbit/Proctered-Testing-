@@ -6,16 +6,27 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    const sync = () => {
+      const storedUser = localStorage.getItem("user");
+      setUser(storedUser ? JSON.parse(storedUser) : null);
+    };
+    // initial
+    sync();
+    // listen for custom updates
+    window.addEventListener("user-updated", sync);
+    // optional: listen to storage for multi-tab sync
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("user-updated", sync);
+      window.removeEventListener("storage", sync);
+    };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
+    window.dispatchEvent(new Event("user-updated"));
     navigate("/login"); // Redirect to login after logout
   };
 
