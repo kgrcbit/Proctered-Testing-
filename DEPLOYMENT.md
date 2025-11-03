@@ -82,11 +82,15 @@ Frontend (Static Site):
 
 1. New → Static Site → Connect your repo → Root Directory: `frontend`.
 2. Build Command: `npm run build`. Publish Directory: `dist`.
-3. Environment Variables:
+3. SPA rewrite (avoid 404 on deep links):
+
+- Ensure `frontend/public/_redirects` contains: `/* /index.html 200`
+
+4. Environment Variables:
 
 - `VITE_API_BASE` = `<BACKEND_URL>/api` (e.g., `https://proctered-mern-backend.onrender.com/api`)
 
-4. Deploy and copy the frontend URL. Update the backend `CLIENT_URL` to this URL and redeploy backend.
+5. Deploy and copy the frontend URL. Update the backend `CLIENT_URL` to this URL and redeploy backend.
 
 ### Frontend Deployment (e.g., Vercel, Netlify, Render)
 
