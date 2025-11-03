@@ -3,12 +3,14 @@
 ## Frontend Environment Variables
 
 ### Local Development (.env)
+
 ```env
 # API Base URL - Points to local backend
 VITE_API_BASE=http://localhost:5000/api
 ```
 
 ### Production (Vercel/Netlify/Render)
+
 ```env
 # API Base URL - Points to deployed backend
 VITE_API_BASE=https://your-backend-app.onrender.com/api
@@ -21,6 +23,7 @@ VITE_API_BASE=https://your-backend-app.onrender.com/api
 ## Backend Environment Variables
 
 ### Local Development (.env)
+
 ```env
 # MongoDB Connection String (Local)
 MONGO_URI=mongodb://localhost:27017/proctesting
@@ -42,6 +45,7 @@ NODE_ENV=development
 ```
 
 ### Production (Render/Heroku/Railway)
+
 ```env
 # MongoDB Connection String (MongoDB Atlas)
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/proctesting?retryWrites=true&w=majority
@@ -64,16 +68,19 @@ NODE_ENV=production
 ## How to Generate Secure Secrets
 
 ### Option 1: Using Node.js
+
 ```javascript
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 ### Option 2: Using OpenSSL
+
 ```bash
 openssl rand -base64 32
 ```
 
 ### Option 3: Using Online Tool
+
 - Visit: https://www.random.org/strings/
 - Generate a random alphanumeric string (min 32 characters)
 
@@ -82,18 +89,21 @@ openssl rand -base64 32
 ## Platform-Specific Instructions
 
 ### Vercel (Frontend)
+
 1. Project Settings → Environment Variables
 2. Add variable name: `VITE_API_BASE`
 3. Add variable value: `https://your-backend.onrender.com/api`
 4. Select environments: Production, Preview, Development
 
 ### Netlify (Frontend)
+
 1. Site settings → Build & deploy → Environment
 2. Click "Add variable"
 3. Key: `VITE_API_BASE`
 4. Value: `https://your-backend.onrender.com/api`
 
 ### Render (Backend)
+
 1. Dashboard → Your Web Service → Environment
 2. Add Environment Variables:
    - `MONGO_URI` = `mongodb+srv://...`
@@ -102,6 +112,7 @@ openssl rand -base64 32
    - `NODE_ENV` = `production`
 
 ### Heroku (Backend)
+
 ```bash
 heroku config:set MONGO_URI="mongodb+srv://..."
 heroku config:set JWT_SECRET="your-secret-key"
@@ -114,11 +125,13 @@ heroku config:set NODE_ENV="production"
 ## Validation Checklist
 
 ### Before Deploying Frontend
+
 - [ ] `VITE_API_BASE` includes `/api` at the end
 - [ ] Backend URL is HTTPS (not HTTP) for production
 - [ ] Backend is already deployed and running
 
 ### Before Deploying Backend
+
 - [ ] `MONGO_URI` connection string is valid
 - [ ] MongoDB Atlas IP whitelist includes 0.0.0.0/0 (or your host's IPs)
 - [ ] `JWT_SECRET` is strong and unique (min 32 characters)
@@ -126,6 +139,7 @@ heroku config:set NODE_ENV="production"
 - [ ] All special characters in passwords are URL-encoded if needed
 
 ### After Deployment
+
 - [ ] Frontend can reach backend (check Network tab in browser)
 - [ ] No CORS errors in browser console
 - [ ] Can successfully register and login
@@ -148,7 +162,9 @@ heroku config:set NODE_ENV="production"
 ## Troubleshooting
 
 ### MongoDB URI Special Characters
+
 If your password contains special characters, URL-encode them:
+
 - `@` → `%40`
 - `:` → `%3A`
 - `/` → `%2F`
@@ -157,34 +173,38 @@ If your password contains special characters, URL-encode them:
 - `%` → `%25`
 
 Example:
+
 ```
 Password: p@ss:word/123
 Encoded: p%40ss%3Aword%2F123
 ```
 
 ### Verifying Environment Variables
+
 **Frontend (Browser Console):**
+
 ```javascript
-console.log(import.meta.env.VITE_API_BASE)
+console.log(import.meta.env.VITE_API_BASE);
 ```
 
 **Backend (Node.js):**
+
 ```javascript
-console.log('MONGO_URI:', process.env.MONGO_URI ? 'Set' : 'Not Set')
-console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not Set')
+console.log("MONGO_URI:", process.env.MONGO_URI ? "Set" : "Not Set");
+console.log("JWT_SECRET:", process.env.JWT_SECRET ? "Set" : "Not Set");
 ```
 
 ---
 
 ## Quick Reference
 
-| Variable | Location | Required | Example |
-|----------|----------|----------|---------|
-| `VITE_API_BASE` | Frontend | Yes | `https://backend.com/api` |
-| `MONGO_URI` | Backend | Yes | `mongodb+srv://...` |
-| `JWT_SECRET` | Backend | Yes | `random-64-char-string` |
-| `CLIENT_URL` | Backend | Yes | `https://frontend.com` |
-| `PORT` | Backend | No* | `5000` |
-| `NODE_ENV` | Backend | Yes | `production` |
+| Variable        | Location | Required | Example                   |
+| --------------- | -------- | -------- | ------------------------- |
+| `VITE_API_BASE` | Frontend | Yes      | `https://backend.com/api` |
+| `MONGO_URI`     | Backend  | Yes      | `mongodb+srv://...`       |
+| `JWT_SECRET`    | Backend  | Yes      | `random-64-char-string`   |
+| `CLIENT_URL`    | Backend  | Yes      | `https://frontend.com`    |
+| `PORT`          | Backend  | No\*     | `5000`                    |
+| `NODE_ENV`      | Backend  | Yes      | `production`              |
 
-*Usually auto-set by hosting platform
+\*Usually auto-set by hosting platform

@@ -5,19 +5,22 @@
 ### Vercel (Recommended for Frontend)
 
 1. **Connect Repository**
+
    - Go to [vercel.com](https://vercel.com)
    - Import your GitHub repository
    - Select the `frontend` folder as root directory
 
 2. **Configure Build Settings**
+
    - Framework Preset: Vite
    - Build Command: `npm run build`
    - Output Directory: `dist`
    - Install Command: `npm install`
 
 3. **Add Environment Variable**
+
    - Go to Project Settings → Environment Variables
-   - Add: 
+   - Add:
      - Key: `VITE_API_BASE`
      - Value: `https://your-backend.onrender.com/api`
    - Apply to: Production, Preview, Development
@@ -29,15 +32,18 @@
 ### Netlify
 
 1. **Connect Repository**
+
    - Go to [netlify.com](https://netlify.com)
    - New site from Git → Choose your repository
    - Base directory: `frontend`
 
 2. **Build Settings**
+
    - Build command: `npm run build`
    - Publish directory: `frontend/dist`
 
 3. **Environment Variables**
+
    - Site settings → Build & deploy → Environment
    - Add: `VITE_API_BASE` = `https://your-backend.onrender.com/api`
 
@@ -46,10 +52,12 @@
 ### Render (Static Site)
 
 1. **Create New Static Site**
+
    - Dashboard → New → Static Site
    - Connect your repository
 
 2. **Configure**
+
    - Root Directory: `frontend`
    - Build Command: `npm run build`
    - Publish Directory: `frontend/dist`
@@ -62,10 +70,12 @@
 ### Render (Recommended for Backend)
 
 1. **Create New Web Service**
+
    - Dashboard → New → Web Service
    - Connect your repository
 
 2. **Configure**
+
    - Name: `proctesting-backend` (or your choice)
    - Root Directory: `backend`
    - Environment: Node
@@ -73,6 +83,7 @@
    - Start Command: `node server.js`
 
 3. **Environment Variables** (Critical!)
+
    ```
    MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/proctesting
    JWT_SECRET=your-super-secret-jwt-key-minimum-32-characters
@@ -87,11 +98,13 @@
 ### Heroku
 
 1. **Install Heroku CLI**
+
    ```bash
    npm install -g heroku
    ```
 
 2. **Login and Create App**
+
    ```bash
    heroku login
    cd backend
@@ -99,6 +112,7 @@
    ```
 
 3. **Set Environment Variables**
+
    ```bash
    heroku config:set MONGO_URI="your-mongodb-uri"
    heroku config:set JWT_SECRET="your-jwt-secret"
@@ -115,11 +129,13 @@
 ## Database Setup (MongoDB Atlas)
 
 1. **Create Free Cluster**
+
    - Go to [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
    - Create free account
    - Create a new cluster (M0 free tier)
 
 2. **Configure Access**
+
    - Database Access → Add New Database User
      - Username: `proctesting-user` (or your choice)
      - Password: Generate secure password
@@ -170,7 +186,7 @@
 1. **Open Frontend URL** in browser
 2. **Open DevTools** (F12) → Network tab
 3. **Try to register** a new account
-4. **Check Network tab**: 
+4. **Check Network tab**:
    - Should see POST to `https://your-backend.com/api/auth/register`
    - Should return 200/201 status
 5. **Try to login** with the account
@@ -179,25 +195,33 @@
 ## Common Deployment Issues
 
 ### Issue: "Network Error" on Login/Register
-**Solution**: 
+
+**Solution**:
+
 - Check `VITE_API_BASE` is set correctly with `/api` suffix
 - Verify backend is running (visit backend URL in browser)
 - Check backend logs for errors
 
 ### Issue: CORS Error
+
 **Solution**:
+
 - Update backend `CLIENT_URL` environment variable
 - Make sure it matches your frontend domain exactly
 - Restart backend service after changing env vars
 
 ### Issue: MongoDB Connection Failed
+
 **Solution**:
+
 - Verify `MONGO_URI` is correct (check for special characters in password)
 - Ensure IP whitelist in MongoDB Atlas includes 0.0.0.0/0
 - Check MongoDB Atlas cluster is running
 
 ### Issue: 401 Unauthorized
+
 **Solution**:
+
 - Make sure `JWT_SECRET` is set on backend
 - Clear browser localStorage and try again
 - Check token is being sent in Authorization header
@@ -205,11 +229,13 @@
 ## Environment Variables Reference
 
 ### Frontend (.env)
+
 ```env
 VITE_API_BASE=https://your-backend.onrender.com/api
 ```
 
 ### Backend (.env)
+
 ```env
 MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/proctesting
 JWT_SECRET=your-very-long-secret-key-at-least-32-characters
