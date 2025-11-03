@@ -35,9 +35,11 @@ const Login = () => {
     setError("");
     const email = formData.email.trim();
     const password = formData.password;
+    // Allow either a valid email or a roll number (non-empty string without spaces)
     const emailOk = /.+@.+\..+/.test(email);
-    if (!email || !emailOk || !password) {
-      setError("Please enter a valid email and password.");
+    const rollOk = /^[^\s@]+$/.test(email);
+    if (!email || !(emailOk || rollOk) || !password) {
+      setError("Enter your email or roll number and password.");
       return;
     }
 
@@ -89,9 +91,9 @@ const Login = () => {
           className="flex flex-col space-y-4 text-left"
         >
           <input
-            type="email"
+            type="text"
             name="email"
-            placeholder="Email Address"
+            placeholder="Email or Roll Number"
             value={formData.email}
             onChange={handleChange}
             className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"

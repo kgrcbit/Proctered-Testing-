@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ContactUs from "./pages/ContactUs";
 import AdminFaculty from "./pages/AdminFaculty";
+import AdminStudentsUpload from "./pages/AdminStudentsUpload";
 import FacultyExams from "./pages/FacultyExams";
 import ExamEditor from "./pages/ExamEditor";
 import FacultySubmissions from "./pages/FacultySubmissions";
@@ -64,6 +65,16 @@ function AppShell() {
             <PrivateRoute>
               <RoleRoute allow={["admin"]}>
                 <AdminFaculty />
+              </RoleRoute>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/students/upload"
+          element={
+            <PrivateRoute>
+              <RoleRoute allow={["admin"]}>
+                <AdminStudentsUpload />
               </RoleRoute>
             </PrivateRoute>
           }

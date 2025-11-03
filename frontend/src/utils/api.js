@@ -29,6 +29,18 @@ export const createFaculty = (data, token) =>
 export const listFaculty = (token) =>
   API.get("/admin/faculty", authHeader(token));
 
+// Admin - Students bulk upload
+export const uploadStudents = (file, token) => {
+  const form = new FormData();
+  form.append("file", file);
+  return API.post("/admin/students/upload", form, {
+    headers: {
+      ...(authHeader(token).headers || {}),
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
 // Faculty - Exams
 export const listMyExams = () => API.get("/exams", localAuthHeader());
 export const createExam = (payload) =>

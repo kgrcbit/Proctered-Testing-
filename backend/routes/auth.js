@@ -40,7 +40,12 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    // Support login using either email or roll number (provided in the same field)
+    const identifier = (email || "").trim();
+    const query = identifier.includes("@")
+      ? { email: identifier }
+      : { rollno: identifier };
+    const user = await User.findOne(query);
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -61,11 +66,13 @@ router.post("/login", async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        rollno: user.rollno,
         role: user.role,
         college: user.college,
         year: user.year,
         department: user.department,
         section: user.section,
+        semester: user.semester,
       },
     });
   } catch (err) {
@@ -86,7 +93,7 @@ router.get("/user", authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
- 
+
 // Update current user's profile (authenticated)
 router.put("/profile", authMiddleware, async (req, res) => {
   try {
@@ -95,7 +102,8 @@ router.put("/profile", authMiddleware, async (req, res) => {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (typeof name === "string" && name.trim().length > 0) user.name = name.trim();
+    if (typeof name === "string" && name.trim().length > 0)
+      user.name = name.trim();
     if (typeof college === "string") user.college = college.trim();
     if (typeof department === "string") user.department = department.trim();
 

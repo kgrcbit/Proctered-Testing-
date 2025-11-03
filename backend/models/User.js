@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
+    // Login identifier (email) — for bulk-uploaded students we will synthesize one from roll number
     email: { type: String, required: true, unique: true, index: true },
+    // University issued Roll Number used as username for students
+    rollno: { type: String, unique: true, sparse: true, index: true },
     password: { type: String, required: true },
 
     // Role-based access
@@ -19,6 +22,8 @@ const UserSchema = new mongoose.Schema(
     year: { type: Number, min: 1, max: 8 },
     department: { type: String },
     section: { type: Number, min: 1, max: 5 },
+    // Optional explicit semester (1..14 etc.). If set, year may be derived as ceil(semester/2)
+    semester: { type: Number, min: 1, max: 16 },
   },
   { timestamps: true }
 );
