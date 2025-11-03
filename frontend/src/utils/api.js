@@ -1,9 +1,8 @@
 import axios from "axios";
 
-// Prefer environment-configured API base for deployments (Render, etc.)
-// In local dev, default to http://localhost:5000/api
-const DEFAULT_LOCAL_API = "http://localhost:5000/api";
-const API_BASE = import.meta.env?.VITE_API_BASE || DEFAULT_LOCAL_API;
+// Hard-coded backend base URL (includes /api)
+// Requested override: https://procteredmern.onrender.com
+const API_BASE = "https://procteredmern.onrender.com/api";
 const API = axios.create({ baseURL: API_BASE });
 
 // Auth

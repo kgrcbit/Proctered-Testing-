@@ -1,9 +1,9 @@
 // Configuration for the frontend application
-// Uses Vite environment variables
+// Hard-coded backend base URL per request
 
 const config = {
-  // API Base URL - defaults to localhost for development
-  apiBaseUrl: import.meta.env.VITE_API_BASE || "http://localhost:5000/api",
+  // Backend base URL (no trailing /api here; getApiUrl will add it via endpoint)
+  apiBaseUrl: "https://procteredmern.onrender.com",
 
   // Get the full API URL for a given endpoint
   getApiUrl: (endpoint) => {
