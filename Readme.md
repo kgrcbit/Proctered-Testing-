@@ -183,6 +183,3 @@ npm run preview  # Preview the production build
 
 ---
 
-## License
-
-This project is for educational purposes. Add a license here if you plan to distribute.
