@@ -115,11 +115,35 @@ const FacultySubmissions = () => {
         const options = Array.isArray(q?.options)
           ? q.options.map((o) => String(o ?? "").trim()).filter(Boolean)
           : [];
+        const correctAnswers = Array.isArray(q?.correctAnswers)
+          ? q.correctAnswers
+              .map((v) => Number(v))
+              .filter((v) => Number.isInteger(v) && v >= 0)
+          : [];
+
+        const correctLineText =
+          qType === "single" || qType === "mcq"
+            ? (() => {
+                const parts = correctAnswers
+                  .map((oi) => {
+                    const label = letters[oi] || String(oi + 1);
+                    const opt = options[oi] ? ` ${options[oi]}` : "";
+                    return `${label}.${opt}`.trim();
+                  })
+                  .filter(Boolean);
+                return `Correct Answer: ${parts.length ? parts.join(", ") : "-"}`;
+              })()
+            : "";
 
         // Estimate block height conservatively to avoid awkward splits.
-        const qLines = doc.splitTextToSize(`Q${idx + 1}. ${qText}`, contentW - 28);
-        const infoLines = info
-          ? doc.splitTextToSize(`Info: ${info}`, contentW)
+        const marksReserve = 30;
+        const infoReserve = info ? 56 : 0;
+        const qLines = doc.splitTextToSize(
+          `Q${idx + 1}. ${qText}`,
+          contentW - marksReserve - infoReserve
+        );
+        const infoHeaderLines = info
+          ? doc.splitTextToSize(info, infoReserve - 4)
           : [];
         const optLines =
           qType === "single" || qType === "mcq"
@@ -133,12 +157,15 @@ const FacultySubmissions = () => {
                 return acc;
               }, [])
             : [];
+        const correctLines = correctLineText
+          ? doc.splitTextToSize(correctLineText, contentW - 6)
+          : [];
 
         const extraForText = qType === "text" ? 5 * 8 : 0;
         const approxHeight =
-          qLines.length * lineGap +
-          (infoLines.length ? infoLines.length * 4 + 2 : 0) +
+          Math.max(qLines.length * lineGap, infoHeaderLines.length * 4) +
           (optLines.length ? optLines.length * 4 + 3 : 0) +
+          (correctLines.length ? correctLines.length * 4 + 3 : 0) +
           extraForText +
           10;
         ensureSpace(approxHeight);
@@ -151,20 +178,23 @@ const FacultySubmissions = () => {
         const textStartX = margin;
         const marksText = `Marks: ${Number.isFinite(pts) ? formatMark(pts) : "-"}`;
         doc.text(marksText, pageW - margin, y, { align: "right" });
-
-        // Render the question text in wrapped lines (keeping space for marks on the first line)
-        const firstLineMaxW = contentW - 28;
-        const firstLine = doc.splitTextToSize(`${qPrefix}${qText}`, firstLineMaxW);
-        doc.text(firstLine, textStartX, y);
-        y += firstLine.length * lineGap;
-
-        if (infoLines.length) {
+        if (infoHeaderLines.length) {
           doc.setFont("helvetica", "normal");
           doc.setFontSize(9.5);
           doc.setTextColor(71, 85, 105);
-          doc.text(infoLines, margin, y);
-          y += infoLines.length * 4 + 2;
+          doc.text(infoHeaderLines, pageW - margin - marksReserve, y, {
+            align: "right",
+          });
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(11);
+          doc.setTextColor(15, 23, 42);
         }
+
+        // Render the question text in wrapped lines (keeping space for marks on the first line)
+        const firstLineMaxW = contentW - marksReserve - infoReserve;
+        const firstLine = doc.splitTextToSize(`${qPrefix}${qText}`, firstLineMaxW);
+        doc.text(firstLine, textStartX, y);
+        y += Math.max(firstLine.length * lineGap, infoHeaderLines.length * 4);
 
         if (qType === "single" || qType === "mcq") {
           doc.setFont("helvetica", "normal");
@@ -180,6 +210,14 @@ const FacultySubmissions = () => {
             doc.text(lines, margin + 3, y);
             y += lines.length * 4 + 1;
           });
+          if (correctLines.length) {
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(10);
+            doc.setTextColor(15, 23, 42);
+            ensureSpace(correctLines.length * 4 + 2);
+            doc.text(correctLines, margin + 3, y);
+            y += correctLines.length * 4 + 2;
+          }
           y += 2;
         }
 
