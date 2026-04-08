@@ -76,10 +76,10 @@ const Navbar = () => {
               Home
             </Link>
             <Link
-              to="/contactus"
+              to="/about"
               className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
-              Contact
+              About
             </Link>
 
             {user ? (
@@ -185,11 +185,11 @@ const Navbar = () => {
               Home
             </Link>
             <Link
-              to="/contactus"
+              to="/about"
               onClick={() => setOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-emerald-600/15 hover:text-emerald-300 transition-colors"
             >
-              Contact
+              About
             </Link>
             {user ? (
               <>

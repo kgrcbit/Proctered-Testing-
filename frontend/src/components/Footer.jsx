@@ -1,5 +1,3 @@
-import React from "react";
-
 const Footer = () => {
   const year = new Date().getFullYear();
   return (
@@ -7,11 +5,15 @@ const Footer = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-sm sm:text-base text-slate-300 text-center sm:text-left">
-            ProcTesting — Proctored Exams (MERN)
+            ProcTesting — Proctored Exams
           </p>
           <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-end">
             <span className="text-xs sm:text-sm text-slate-400">
-              Done by{" "}
+              Product of{" "}
+              <span className="font-semibold text-rose-400">
+                Information Technology
+              </span>{" "}
+              Department • Developed by{" "}
               <a
                 href="https://in.linkedin.com/in/ashwithg"
                 target="_blank"

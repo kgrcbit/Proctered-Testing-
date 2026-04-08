@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import ContactUs from "./pages/ContactUs";
+import About from "./pages/ContactUs";
 import AdminFaculty from "./pages/AdminFaculty";
 import AdminStudentsUpload from "./pages/AdminStudentsUpload";
 import AdminUsers from "./pages/AdminUsers";
@@ -55,7 +55,8 @@ function AppShell() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/contactus" element={<ContactUs />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contactus" element={<Navigate to="/about" replace />} />
           <Route
             path="/dashboard"
             element={
