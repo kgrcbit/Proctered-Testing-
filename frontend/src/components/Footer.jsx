@@ -14,23 +14,9 @@ const Footer = () => {
                 Information Technology
               </span>{" "}
               Department • Developed by{" "}
-              <a
-                href="https://in.linkedin.com/in/ashwithg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-emerald-300 hover:underline"
-              >
-                Ashwith Godishala
-              </a>
+             
             </span>
-            <a
-              href="https://github.com/GodishalaAshwith"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub Profile"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-              title="GitHub"
-            >
+            
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
