@@ -22,7 +22,7 @@ const Footer = () => {
         </div>
 
         <p className="mt-2 text-center text-xs text-slate-500">
-          &copy; {year} • Built with React, Node.js/Express, and MongoDB
+          © {year} • Built with React, Node.js, Express, MongoDB
         </p>
 
       </div>
