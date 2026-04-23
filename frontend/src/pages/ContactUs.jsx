@@ -79,6 +79,15 @@ const About = () => {
             {/* RIGHT SIDE - MULTIPLE CARDS */}
             <div className="lg:col-span-1 space-y-6">
 
+              {/* Faculty Contributor */}
+              <section className="bg-slate-900 rounded-3xl p-6 text-white">
+                <h2 className="text-lg font-bold mb-2">Faculty Contributor</h2>
+                <p>Mr. K. Gangadhar Rao</p>
+                <a href="mailto:kgangadhar_it@cbit.ac.in" className="text-sm text-gray-300">
+                  kgangadhar_it@cbit.ac.in
+                </a>
+              </section>
+
               {/* Developer - Ashwith */}
               <section className="bg-slate-900 rounded-3xl p-6 text-white">
                 <h2 className="text-lg font-bold mb-2">Developer</h2>
@@ -93,13 +102,11 @@ const About = () => {
               <section className="bg-slate-900 rounded-3xl p-6 text-white">
                 <h2 className="text-lg font-bold mb-2">Developer</h2>
                 <p>Bhargav Ram K</p>
+                <p className="text-emerald-400 text-sm">160123737173</p>
               </section>
 
-              {/* Faculty Contributor */}
-              <section className="bg-slate-900 rounded-3xl p-6 text-white">
-                <h2 className="text-lg font-bold mb-2">Faculty Contributor</h2>
-                <p>K Gangadhara Rao</p>
-              </section>
+              
+
 
             </div>
 
