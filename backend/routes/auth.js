@@ -39,6 +39,7 @@ router.post("/register", async (req, res) => {
 
 // Login (User/Faculty/Admin only) — checks Users collection
 router.post("/login-user", async (req, res) => {
+  console.log("REQ BODY:", req.body);
   try {
     const { email, password } = req.body;
     const identifier = (email || "").trim();
@@ -107,6 +108,7 @@ router.post("/login-user", async (req, res) => {
 
 // Login (Student mode) — checks Students collection only; NO User creation
 router.post("/login-student", async (req, res) => {
+  console.log("REQ BODY:", req.body);
   try {
     const { email, password } = req.body;
     const identifier = (email || "").trim();
