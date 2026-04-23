@@ -7,6 +7,62 @@ const Student = require("../models/Student");
 
 const router = express.Router();
 
+const createJwtToken = (payload) =>
+  jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+const buildUserResponse = async (user) => {
+  const token = createJwtToken({ id: user._id, role: user.role, model: "User" });
+  let enriched = {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    rollno: user.rollno,
+    role: user.role,
+  };
+  if (user.role === "student") {
+    const roster = await Student.findOne(
+      user.rollno ? { rollno: user.rollno } : { email: user.email }
+    ).select("college year department section semester");
+    if (roster) {
+      enriched = {
+        ...enriched,
+        college: roster.college,
+        year: roster.year,
+        department: roster.department,
+        section: roster.section,
+        semester: roster.semester,
+      };
+    }
+  }
+  return { token, user: enriched };
+};
+
+const buildStudentResponse = (student) => {
+  const email = student.email || `${student.rollno}@students.local`;
+  const token = createJwtToken({
+    id: student._id,
+    role: "student",
+    model: "Student",
+    rollno: student.rollno,
+    email,
+  });
+  return {
+    token,
+    user: {
+      id: student._id,
+      role: "student",
+      name: student.name,
+      email,
+      rollno: student.rollno,
+      college: student.college,
+      year: student.year,
+      department: student.department,
+      section: student.section,
+      semester: student.semester,
+    },
+  };
+};
+
 // Register Student (default role: student)
 router.post("/register", async (req, res) => {
   try {
@@ -37,7 +93,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login (User/Faculty/Admin only) — checks Users collection
+// Login (User/Faculty/Admin only) — checks Users collection and falls back to roster-only student login
 router.post("/login-user", async (req, res) => {
   console.log("REQ BODY:", req.body);
   try {
@@ -46,67 +102,28 @@ router.post("/login-user", async (req, res) => {
     const query = identifier.includes("@")
       ? { email: identifier }
       : { rollno: identifier };
+
     const user = await User.findOne(query);
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch)
+        return res.status(400).json({ message: "Invalid credentials" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
-
-    // Optional: If a student user exists in Users, ensure they are in roster
-    if (user.role === "student") {
-      const rosterOk = await Student.exists({
-        $or: [
-          user.rollno ? { rollno: user.rollno } : null,
-          user.email ? { email: user.email } : null,
-        ].filter(Boolean),
-      });
-      if (!rosterOk) {
-        return res
-          .status(403)
-          .json({ message: "Student not found in roster. Contact admin." });
-      }
+      return res.json(await buildUserResponse(user));
     }
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role, model: "User" },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
-      }
-    );
-
-    // For students logging in via Users, enrich with roster
-    let enriched = {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      rollno: user.rollno,
-      role: user.role,
-    };
-    if (user.role === "student") {
-      const roster = await Student.findOne(
-        user.rollno ? { rollno: user.rollno } : { email: user.email }
-      ).select("college year department section semester");
-      if (roster) {
-        enriched = {
-          ...enriched,
-          college: roster.college,
-          year: roster.year,
-          department: roster.department,
-          section: roster.section,
-          semester: roster.semester,
-        };
-      }
+    const student = await Student.findOne(query);
+    if (student && String(password) === String(student.rollno)) {
+      return res.json(buildStudentResponse(student));
     }
 
-    res.json({ token, user: enriched });
+    return res.status(400).json({ message: "Invalid credentials" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Login (Student mode) — checks Students collection only; NO User creation
+// Login (Student mode) — checks Students collection first, then Users collection for student accounts
 router.post("/login-student", async (req, res) => {
   console.log("REQ BODY:", req.body);
   try {
@@ -117,39 +134,29 @@ router.post("/login-student", async (req, res) => {
       : { rollno: identifier };
 
     const student = await Student.findOne(query);
-    if (!student)
-      return res.status(400).json({ message: "Invalid credentials" });
-    // Default policy: initial password is the roll number
-    if (String(password) !== String(student.rollno)) {
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (student) {
+      const user = await User.findOne({ ...query, role: "student" });
+      if (user) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+          return res.json(await buildUserResponse(user));
+        }
+      }
+
+      if (String(password) === String(student.rollno)) {
+        return res.json(buildStudentResponse(student));
+      }
     }
 
-    const token = jwt.sign(
-      {
-        id: student._id,
-        role: "student",
-        model: "Student",
-        rollno: student.rollno,
-        email: student.email || `${student.rollno}@students.local`,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const user = await User.findOne({ ...query, role: "student" });
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
+        return res.json(await buildUserResponse(user));
+      }
+    }
 
-    const payload = {
-      id: student._id,
-      role: "student",
-      name: student.name,
-      email: student.email || `${student.rollno}@students.local`,
-      rollno: student.rollno,
-      college: student.college,
-      year: student.year,
-      department: student.department,
-      section: student.section,
-      semester: student.semester,
-    };
-
-    return res.json({ token, user: payload });
+    return res.status(400).json({ message: "Invalid credentials" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: err.message });
